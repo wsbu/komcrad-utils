@@ -38,3 +38,14 @@
      (try
        ~@body
        (finally (delete-file file#)))))
+
+(defn available-port? [n]
+  (try
+    (let [socket (java.net.ServerSocket. n)]
+      (.close socket) true)
+    (catch Exception e false)))
+
+(defn available-port []
+  (let [socket (java.net.ServerSocket. 0)]
+    (.close socket)
+    (.getLocalPort socket)))
