@@ -23,7 +23,7 @@
 (defn delete-file
   "deletes file recursively"
   [file]
-  (loop [files (vec [(io/file file)])]
+  (loop [files (vec [(clojure.java.io/file file)])]
     (when (not (empty? files))
       (let [f (first files)]
         (if (and (.isDirectory f) (> (count (.listFiles f)) 0))
