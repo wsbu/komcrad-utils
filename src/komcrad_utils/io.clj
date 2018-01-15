@@ -20,10 +20,21 @@
         tmp (tmp-file)]
     (spit tmp (slurp res)) tmp))
 
+(defn delete-file
+  "deletes file recursively"
+  [file]
+  (loop [files (vec [(io/file file)])]
+    (when (not (empty? files))
+      (let [f (first files)]
+        (if (and (.isDirectory f) (> (count (.listFiles f)) 0))
+            (recur (concat (vec (.listFiles f)) files))
+            (do (.delete f)
+                (recur (rest files))))))))
+
 (defmacro with-tmp-file
   "executes body and insures the file is deleted"
   [file & body]
   `(let [file# ~file]
      (try
        ~@body
-       (finally (.delete file#)))))
+       (finally (delete-file file#)))))
