@@ -18,7 +18,8 @@
   [resource]
   (let [res (clojure.java.io/resource resource)
         tmp (tmp-file)]
-    (spit tmp (slurp res)) tmp))
+    (with-open [in (clojure.java.io/input-stream res)]
+      (clojure.java.io/copy in tmp) tmp)))
 
 (defn delete-file
   "deletes file recursively"
