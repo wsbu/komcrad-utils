@@ -50,3 +50,25 @@
   (let [socket (java.net.ServerSocket. 0)]
     (.close socket)
     (.getLocalPort socket)))
+
+(defn local-ip
+  []
+  (.getHostAddress (java.net.InetAddress/getLocalHost)))
+
+(defn get-local-interfaces
+  []
+  (let [interfaces (. java.net.NetworkInterface getNetworkInterfaces)]
+    (if (.hasMoreElements interfaces)
+      (loop [interface (.nextElement interfaces) result []]
+        (if (.hasMoreElements interfaces)
+          (recur (.nextElement interfaces) (conj result interface))
+          (conj result interface))))))
+
+(defn filter-interfaces
+  [s]
+  (vec (filter (fn [x] (.contains (.getName x) s)) (get-local-interfaces))))
+
+(defn ipv4-from-interface
+  [^java.net.NetworkInterface interface]
+  (.getHostAddress (.getAddress (first (filter #(= 32 (.getNetworkPrefixLength %))
+                                               (.getInterfaceAddresses interface))))))
