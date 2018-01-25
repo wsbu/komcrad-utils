@@ -1,5 +1,9 @@
 (ns komcrad-utils.io)
 
+(defn file
+  [f]
+  (clojure.java.io/file f))
+
 (defn tmp-file
   "returns a tmp file File object"
   []
@@ -21,6 +25,16 @@
     (with-open [in (clojure.java.io/input-stream res)]
       (clojure.java.io/copy in tmp) tmp)))
 
+(defn file-list
+  "returns a vector of files found in file (a folder)"
+  [file]
+  (vec (.listFiles (clojure.java.io/file file))))
+
+(defn files-partial-match
+  "given a vector of files, returns a vector of files whos names match filename"
+  [files filename]
+  (filter #(.contains (.getName %) filename) files))
+
 (defn delete-file
   "deletes file recursively"
   [file]
@@ -31,6 +45,18 @@
             (recur (concat (vec (.listFiles f)) files))
             (do (.delete f)
                 (recur (rest files))))))))
+
+(defn file-move
+  [input-file output-file]
+  (clojure.java.io/copy input-file output-file)
+  (if (.exists output-file)
+    (do (delete-file (.getPath input-file)) true)))
+
+(defn file-move-tmp
+  [input-file]
+  (let [tmp-dir (tmp-folder)
+        tmp-file (file (str (.getPath tmp-dir) "/" (.getName input-file)))]
+    (file-move input-file tmp-file) tmp-file))
 
 (defmacro with-tmp-file
   "executes body and insures the file is deleted"
