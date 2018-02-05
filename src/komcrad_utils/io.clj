@@ -66,6 +66,15 @@
        ~@body
        (finally (delete-file file#)))))
 
+(defn host-port-listening?
+  "returns true if a host at ip is listing on port n"
+  [ip n]
+  (try
+    (let [s (new java.net.Socket)]
+      (.connect s (new java.net.InetSocketAddress ip n))
+      (.close s) true)
+    (catch Exception e false)))
+
 (defn available-port? [n]
   (try
     (let [socket (java.net.ServerSocket. n)]
