@@ -10,3 +10,12 @@
           (if result result (do (Thread/sleep retry-delay)
                               (recur (. System currentTimeMillis)))))
         nil))))
+
+(defmacro attempt
+    "repeatedly executes body until timeout (milliseconds) is reached or an exception is not thrown"
+      [timeout & body]
+        `(wait-for
+          (fn []
+           (try
+             ~@body true
+             (catch Exception e# false))) ~timeout 500))
