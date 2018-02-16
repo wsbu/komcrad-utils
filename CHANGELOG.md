@@ -1,7 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [0.2.0 - 2018-02-16]
+### Added
+- macro that will repeatedly execute the body until the timeout is reached or the body does not throw and exception
+
 ## [0.1.7 - 2018-01-25]
+### Addded
 - function for checking if a host port is listening
 
 ## [0.1.6 - 2018-01-25]
