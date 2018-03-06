@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [0.3.0 - 2018-03-06]
+### Added
+- a function for doing multiple replacements
+
 ## [0.2.0 - 2018-02-16]
 ### Added
 - macro that will repeatedly execute the body until the timeout is reached or the body does not throw and exception
