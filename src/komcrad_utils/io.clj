@@ -1,4 +1,5 @@
-(ns komcrad-utils.io)
+(ns komcrad-utils.io
+  (:gen-class))
 
 (defn file
   [f]

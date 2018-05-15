@@ -1,4 +1,5 @@
-(ns komcrad-utils.string)
+(ns komcrad-utils.string
+  (:gen-class))
 
 (defn replace-several [content & replacements]
   (let [replacement-list (partition 2 replacements)]

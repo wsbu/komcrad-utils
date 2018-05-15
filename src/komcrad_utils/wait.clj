@@ -1,4 +1,5 @@
-(ns komcrad-utils.wait)
+(ns komcrad-utils.wait
+  (:gen-class))
 
 (defn wait-for
   "wait for a max of timeout in milliseconds for f to return true. Sleeping for retry-delay between each attempt of f"
