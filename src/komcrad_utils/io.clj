@@ -26,6 +26,16 @@
     (with-open [in (clojure.java.io/input-stream res)]
       (clojure.java.io/copy in tmp) tmp)))
 
+(defn resource-as-folder-child
+  "returns a file (in a tmp folder) with the same name as resource"
+  [resource]
+  (let [res (clojure.java.io/resource resource)
+        tmp (tmp-folder)
+        new-file (file (str (.getCanonicalPath tmp) "/"
+                            (.getName (file res))))]
+    (with-open [in (clojure.java.io/input-stream res)]
+      (clojure.java.io/copy in new-file)) new-file))
+
 (defn file-list
   "returns a vector of files found in file (a folder)"
   [file]
@@ -46,6 +56,16 @@
             (recur (concat (vec (.listFiles f)) files))
             (do (.delete f)
                 (recur (rest files))))))))
+
+(defn parent
+  "return parent of file"
+  [file]
+  (.getParent file))
+
+(defn delete-file-parent
+  "calls delete-file on parent of file"
+  [file]
+  (delete-file (parent file)))
 
 (defn file-move
   [input-file output-file]
