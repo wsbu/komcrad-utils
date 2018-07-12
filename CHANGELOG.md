@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [0.4.0 - 2018-07-12]
+### Added
+- More options for dealing with resources
+
 ## [0.3.1 - 2018-05-15]
 ### Fixed
 - added (:gen-class) to the ns function calls
