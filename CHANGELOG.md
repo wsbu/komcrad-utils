@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [0.4.1 - 2018-07-18]
+### Added
+- touch-tmp and zero-fill fn
+
+### Fixed
+- replaced "/" with a function that gets the OS's file separator
+
 ## [0.4.0 - 2018-07-12]
 ### Added
 - More options for dealing with resources

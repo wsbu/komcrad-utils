@@ -1,5 +1,6 @@
 (ns komcrad-utils.io
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.java.io :refer [output-stream]]))
 
 (defn file
   [f]
@@ -31,7 +32,7 @@
   [resource]
   (let [res (clojure.java.io/resource resource)
         tmp (tmp-folder)
-        new-file (file (str (.getCanonicalPath tmp) "/"
+        new-file (file (str (.getCanonicalPath tmp) (. java.io.File separator)
                             (.getName (file res))))]
     (with-open [in (clojure.java.io/input-stream res)]
       (clojure.java.io/copy in new-file)) new-file))
@@ -76,7 +77,8 @@
 (defn file-move-tmp
   [input-file]
   (let [tmp-dir (tmp-folder)
-        tmp-file (file (str (.getPath tmp-dir) "/" (.getName input-file)))]
+        tmp-file (file (str (.getPath tmp-dir) (. java.io.File separator)
+                            (.getName input-file)))]
     (file-move input-file tmp-file) tmp-file))
 
 (defmacro with-tmp-file
@@ -128,3 +130,15 @@
   [^java.net.NetworkInterface interface]
   (.getHostAddress (.getAddress (first (filter #(= 32 (.getNetworkPrefixLength %))
                                                (.getInterfaceAddresses interface))))))
+
+(defn touch-tmp
+  "creates a file named name in a tmp dir"
+  [name]
+  (let [parent (tmp-folder)]
+    (file (str (.getCanonicalPath parent) (. java.io.File separator) name))))
+
+(defn zero-fill
+  "adds n bytes to file"
+  [file n]
+  (with-open [out (output-stream file)]
+    (.write out (byte-array n))) file)
