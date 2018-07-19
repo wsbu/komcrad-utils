@@ -89,6 +89,23 @@
        ~@body
        (finally (delete-file file#)))))
 
+(defmacro with-tmp-files
+  "executes body and insures the files are deleted"
+  [files & body]
+  `(let [files# ~files]
+     (try
+       ~@body
+       (finally (doseq [x# files#] (delete-file x#))))))
+
+(defmacro with-tmp-folder-children
+  "executes body and insures the files are deleted
+   along with their parents"
+  [files & body]
+  `(let [files# ~files]
+     (try
+       ~@body
+       (finally (doseq [x# files#] (delete-file (parent x#)))))))
+
 (defn host-port-listening?
   "returns true if a host at ip is listing on port n"
   [ip n]
