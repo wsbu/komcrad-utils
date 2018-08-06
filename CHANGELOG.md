@@ -1,5 +1,8 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
+## [0.4.3 - 2018-08-06]
+### Fixed
+- bug in resource-as-folder-child when used from a jar file
 
 ## [0.4.1 - 2018-07-18]
 ### Added
