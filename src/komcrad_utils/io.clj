@@ -33,7 +33,7 @@
   (let [res (clojure.java.io/resource resource)
         tmp (tmp-folder)
         new-file (file (str (.getCanonicalPath tmp) (. java.io.File separator)
-                            (.getName (file res))))]
+                            (last (clojure.string/split (.getPath res) #"/"))))]
     (with-open [in (clojure.java.io/input-stream res)]
       (clojure.java.io/copy in new-file)) new-file))
 
