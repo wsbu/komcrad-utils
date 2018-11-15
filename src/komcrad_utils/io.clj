@@ -106,6 +106,18 @@
        ~@body
        (finally (doseq [x# files#] (delete-file (parent x#)))))))
 
+(defmacro with-tf
+  "binds the given symbol to a tmpfile, executes body with access
+   to the tmpfile and insures the file gets deleted
+   Example: (with-tf [my-file]
+              (spit my-file \"hello\")
+              (slurp my-file))"
+  [[file] & body]
+  `(let [~file (komcrad-utils.io/tmp-file)]
+     (try
+       ~@body
+       (finally (delete-file ~file)))))
+
 (defn host-port-listening?
   "returns true if a host at ip is listing on port n"
   [ip n]
