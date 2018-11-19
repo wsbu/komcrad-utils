@@ -123,7 +123,7 @@
   [ip n]
   (try
     (let [s (new java.net.Socket)]
-      (.connect s (new java.net.InetSocketAddress ip n))
+      (.connect s (new java.net.InetSocketAddress ip n) 5000)
       (.close s) true)
     (catch Exception e false)))
 
