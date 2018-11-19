@@ -1,5 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
+## [0.5.1 - 2018-11-19]
+### Fixed
+- short timeout of host-port-listening?
+
 ## [0.5.0 - 2018-11-15]
 ### Added
 - with-tf macro to replace the (let [file (tmp-file)] (with-tmp-file file)) workflow
