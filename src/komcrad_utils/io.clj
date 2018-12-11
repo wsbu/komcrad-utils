@@ -1,10 +1,17 @@
 (ns komcrad-utils.io
   (:gen-class)
-  (:require [clojure.java.io :refer [output-stream]]))
+  (:require [clojure.java.io :refer [output-stream]]
+            [komcrad-utils.wait :refer [wait-for]]))
 
-(defn file
-  [f]
-  (clojure.java.io/file f))
+(defn file [s]
+  (clojure.java.io/file s))
+
+(defn existing-file
+  "returns a file object based on path s.
+   returns nil if file doesn't exist"
+  [s]
+  (let [file (file s)]
+    (when (.exists file) file)))
 
 (defn tmp-file
   "returns a tmp file File object"
@@ -47,6 +54,13 @@
   [files filename]
   (filter #(.contains (.getName %) filename) files))
 
+(defn wait-file
+  "waits for a file described by path s. returns file or nil"
+  ([s timeout]
+   (wait-for #(existing-file s) timeout 50))
+  ([s]
+   (wait-file s 5000)))
+
 (defn delete-file
   "deletes file recursively"
   [file]
@@ -74,8 +88,7 @@
   (if (.exists output-file)
     (do (delete-file (.getPath input-file)) true)))
 
-(defn file-move-tmp
-  [input-file]
+(defn file-move-tmp [input-file]
   (let [tmp-dir (tmp-folder)
         tmp-file (file (str (.getPath tmp-dir) (. java.io.File separator)
                             (.getName input-file)))]
@@ -138,12 +151,10 @@
     (.close socket)
     (.getLocalPort socket)))
 
-(defn local-ip
-  []
+(defn local-ip []
   (.getHostAddress (java.net.InetAddress/getLocalHost)))
 
-(defn get-local-interfaces
-  []
+(defn get-local-interfaces []
   (let [interfaces (. java.net.NetworkInterface getNetworkInterfaces)]
     (if (.hasMoreElements interfaces)
       (loop [interface (.nextElement interfaces) result []]
@@ -151,8 +162,7 @@
           (recur (.nextElement interfaces) (conj result interface))
           (conj result interface))))))
 
-(defn filter-interfaces
-  [s]
+(defn filter-interfaces [s]
   (vec (filter (fn [x] (.contains (.getName x) s)) (get-local-interfaces))))
 
 (defn ipv4-from-interface
