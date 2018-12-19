@@ -1,5 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
+## [0.7.0 - 2018-12-19]
+### Added
+- string utils for extracting substrings between matching prefixes and suffixes
+
 ## [0.5.1 - 2018-11-19]
 ### Fixed
 - short timeout of host-port-listening?
