@@ -1,5 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
+
+## [0.8.0 - 2019 02-13]
+### Added
+- tmp file utils: tempify, as-tmp, smart-delete, with-tmps
+
 ## [0.7.0 - 2018-12-19]
 ### Added
 - string utils for extracting substrings between matching prefixes and suffixes
