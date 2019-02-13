@@ -34,6 +34,21 @@
     (with-open [in (clojure.java.io/input-stream res)]
       (clojure.java.io/copy in tmp) tmp)))
 
+(defn tempify
+  "returns a file object inside a tmp folder.
+   retains original name of file"
+  [filename]
+  (file (str (.getCanonicalPath (tmp-folder)) "/"
+             (.getName (file filename)))))
+
+(defn as-tmp [filename]
+  (let [in-file (file filename)
+        tmp (tempify filename)]
+    (when (.exists in-file)
+      (with-open [in (clojure.java.io/input-stream in-file)]
+        (clojure.java.io/copy in tmp)))
+      tmp))
+
 (defn resource-as-folder-child
   "returns a file (in a tmp folder) with the same name as resource"
   [resource]
@@ -82,6 +97,13 @@
   [file]
   (delete-file (parent file)))
 
+(defn smart-delete
+  "calls delete-file on parent of file if it matches ^komcrad-utils"
+  [file]
+  (if (re-find #"^komcrad-utils" (.getName (.getParentFile file)))
+    (delete-file-parent file)
+    (delete-file file)))
+
 (defn file-move
   [input-file output-file]
   (clojure.java.io/copy input-file output-file)
@@ -109,6 +131,20 @@
      (try
        ~@body
        (finally (doseq [x# files#] (delete-file x#))))))
+
+(defmacro with-tmps
+  "Executes body and insures the files are deleted.
+   Syntax similar to let:
+   (with-tmps [file1 (tmp-file) file2 (resource-as-file \"resource\")]
+     (println file1 file2))"
+  [bindings & body]
+  `((fn [~@(take-nth 2 bindings)]
+      (try
+        ~@body
+        (finally
+          (doseq [x# [~@(take-nth 2 bindings)]]
+            (komcrad-utils.io/delete-file x#)))))
+    ~@(take-nth 2 (rest bindings))))
 
 (defmacro with-tmp-folder-children
   "executes body and insures the files are deleted
