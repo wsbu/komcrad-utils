@@ -1,7 +1,8 @@
 (ns komcrad-utils.io
   (:gen-class)
   (:require [clojure.java.io :refer [output-stream]]
-            [komcrad-utils.wait :refer [wait-for]]))
+            [komcrad-utils.wait :refer [wait-for]]
+            [clojure.string :as s]))
 
 (defn file [s]
   (clojure.java.io/file s))
@@ -217,3 +218,29 @@
   [file n]
   (with-open [out (output-stream file)]
     (.write out (byte-array n))) file)
+
+(defn read-stream [is]
+  (loop [result []]
+    (if (< 0 (.available is))
+      (recur (conj result (char (.read is))))
+      (do
+        (Thread/sleep 20)
+        (if (< 0 (.available is))
+          (recur result) result)))))
+
+(defn stream-as-atom [is]
+  (let [a (atom {:continue true :val ""})
+        fu (future
+             (while (:continue @a)
+               (swap! a #(merge-with str %1 %2)
+                      {:val (s/join "" (read-stream is))})
+               (Thread/sleep 500))
+             (.close is))] a))
+
+(defmacro with-streams-as-atoms
+  [bindings & body]
+  `(apply (fn [~@(take-nth 2 bindings)]
+     ~@body
+     (doseq [m# [~@(take-nth 2 bindings)]]
+       (swap! m# merge {:continue false})))
+    (map #(stream-as-atom %) [~@(take-nth 2 (rest bindings))])))
